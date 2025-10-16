@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 
 interface ExperimentCard {
   id: string
@@ -110,6 +110,7 @@ interface ExperimentShowcaseProps {
 export default function ExperimentShowcase({ className = '' }: ExperimentShowcaseProps) {
   const [filter, setFilter] = useState<'all' | 'phase-1' | 'phase-2' | 'phase-3'>('all')
   const [filteredExperiments, setFilteredExperiments] = useState(experiments)
+  const filterOptions = ['all', 'phase-1', 'phase-2', 'phase-3'] as const
 
   useEffect(() => {
     if (filter === 'all') {
@@ -157,19 +158,19 @@ export default function ExperimentShowcase({ className = '' }: ExperimentShowcas
   }
 
   return (
-    <section className={`py-20 bg-gray-50 ${className}`}>
-      <div className="max-w-7xl mx-auto px-6">
+    <section className={`py-12 sm:py-16 lg:py-20 bg-gray-50 ${className}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-12 lg:mb-16"
         >
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6">
             Upcoming Experiments
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4">
             Explore what we're building next — practical AI experiments launching soon
           </p>
         </motion.div>
@@ -180,27 +181,55 @@ export default function ExperimentShowcase({ className = '' }: ExperimentShowcas
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex justify-center mb-12"
+          className="flex justify-center mb-8 lg:mb-12 px-4"
         >
-          <div className="flex flex-wrap gap-4 p-2 bg-white rounded-2xl shadow-lg">
-            {(['all', 'phase-1', 'phase-2', 'phase-3'] as const).map((filterOption) => (
-              <button
-                key={filterOption}
-                onClick={() => setFilter(filterOption)}
-                className={`px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
-                  filter === filterOption
-                    ? 'bg-primary-600 text-white shadow-lg transform scale-105'
-                    : 'text-gray-600 hover:text-primary-600 hover:bg-gray-100'
-                }`}
-              >
-                {filterOption === 'all' ? 'All Experiments' : phaseConfig[filterOption].title}
-              </button>
-            ))}
-          </div>
+          <LayoutGroup>
+            <div
+              data-testid="experiment-filter-container"
+              className="relative flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 p-1.5 bg-white/40 backdrop-blur-xl border border-white/60 rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_2px_rgba(255,255,255,0.9),inset_0_-1px_2px_rgba(0,0,0,0.05)] w-full sm:w-auto"
+              style={{
+                backdropFilter: 'blur(20px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              }}
+            >
+              {filterOptions.map((filterOption) => {
+                const isActive = filter === filterOption
+                return (
+                  <button
+                    key={filterOption}
+                    data-testid="experiment-filter-button"
+                    onClick={() => setFilter(filterOption)}
+                    className="relative group inline-flex items-center justify-center px-5 sm:px-7 py-2.5 sm:py-3 text-sm sm:text-base font-semibold leading-tight transition-all duration-300"
+                  >
+                    {isActive && (
+                      <motion.span
+                        layoutId="active-filter-pill"
+                        className="absolute inset-0 rounded-[24px] bg-white/95 shadow-[0_2px_8px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,1)]"
+                        transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                        style={{
+                          backdropFilter: 'blur(10px)',
+                          WebkitBackdropFilter: 'blur(10px)',
+                        }}
+                      />
+                    )}
+                    <span
+                      className={`relative z-10 transition-all duration-300 ${
+                        isActive
+                          ? 'text-gray-900'
+                          : 'text-gray-600 group-hover:text-gray-900'
+                      }`}
+                    >
+                      {filterOption === 'all' ? 'All Experiments' : phaseConfig[filterOption].title}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </LayoutGroup>
         </motion.div>
 
         {/* Experiments Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           <AnimatePresence mode="wait">
             {filteredExperiments.map((experiment, index) => (
               <motion.div
@@ -215,18 +244,22 @@ export default function ExperimentShowcase({ className = '' }: ExperimentShowcas
                   stiffness: 100
                 }}
                 whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden group cursor-pointer transform-gpu"
+                className="bg-white/60 backdrop-blur-xl rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] border border-white/60 overflow-hidden group cursor-pointer transform-gpu hover:shadow-[0_12px_40px_rgba(0,0,0,0.1),inset_0_1px_2px_rgba(255,255,255,0.9)] transition-all duration-300"
                 onClick={() => handleVideoClick(experiment.videoId)}
+                style={{
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                }}
               >
                 {/* Video/Thumbnail Section */}
-                <div className="relative aspect-video bg-gradient-to-br from-primary-100 to-secondary-100 overflow-hidden">
+                <div className="relative aspect-video bg-gradient-to-br from-primary-50/80 to-secondary-50/80 backdrop-blur-sm overflow-hidden">
                   {experiment.status === 'published' ? (
                     <>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10" />
                       <div className="absolute inset-0 flex items-center justify-center z-20">
                         <motion.div
                           whileHover={{ scale: 1.1 }}
-                          className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:bg-primary-600 group-hover:text-white transition-all duration-300"
+                          className="w-16 h-16 bg-white/95 backdrop-blur-lg rounded-full flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.15),inset_0_1px_2px_rgba(255,255,255,1)] group-hover:bg-primary-600 group-hover:text-white transition-all duration-300 border border-white/40"
                         >
                           <svg className="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
@@ -242,21 +275,21 @@ export default function ExperimentShowcase({ className = '' }: ExperimentShowcas
                       )}
                     </>
                   ) : (
-                    <div className="flex items-center justify-center h-full">
+                    <div className="flex items-center justify-center h-full py-8">
                       <div className="text-center">
-                        <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center mb-4 mx-auto">
-                          <svg className="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/70 backdrop-blur-lg rounded-full flex items-center justify-center mb-3 sm:mb-4 mx-auto shadow-[0_4px_12px_rgba(0,0,0,0.08),inset_0_1px_2px_rgba(255,255,255,0.9)] border border-white/60">
+                          <svg className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                           </svg>
                         </div>
-                        <span className="text-gray-500 font-medium">Coming Soon</span>
+                        <span className="text-sm sm:text-base text-gray-500 font-semibold">Coming Soon</span>
                       </div>
                     </div>
                   )}
 
                   {/* Phase Badge */}
-                  <div className="absolute top-4 left-4 z-30">
-                    <span className={`px-3 py-1 text-xs font-semibold text-white rounded-full ${phaseConfig[experiment.phase].color}`}>
+                  <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-30">
+                    <span className={`px-3 sm:px-4 py-1.5 text-xs font-bold text-white rounded-full backdrop-blur-md shadow-[0_4px_12px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.2)] border border-white/20 ${phaseConfig[experiment.phase].color}`}>
                       {phaseConfig[experiment.phase].label}
                     </span>
                   </div>
@@ -264,7 +297,7 @@ export default function ExperimentShowcase({ className = '' }: ExperimentShowcas
                   {/* Stats */}
                   {experiment.views && (
                     <div className="absolute top-4 right-4 z-30">
-                      <span className="px-2 py-1 text-xs font-medium text-white bg-black/50 rounded">
+                      <span className="px-3 py-1.5 text-xs font-semibold text-white bg-black/40 backdrop-blur-md rounded-full border border-white/20 shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
                         {experiment.views} views
                       </span>
                     </div>
@@ -272,20 +305,20 @@ export default function ExperimentShowcase({ className = '' }: ExperimentShowcas
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors">
+                <div className="p-5 sm:p-6 bg-white/30 backdrop-blur-sm">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-primary-600 transition-colors">
                     {experiment.title}
                   </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">
+                  <p className="text-sm sm:text-base text-gray-700 mb-4 line-clamp-3 leading-relaxed">
                     {experiment.description}
                   </p>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between pt-3 border-t border-white/40">
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       {experiment.stars && (
-                        <span className="flex items-center">
-                          <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                        <span className="flex items-center font-medium">
+                          <svg className="w-4 h-4 mr-1 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                           </svg>
                           {experiment.stars}
@@ -298,10 +331,10 @@ export default function ExperimentShowcase({ className = '' }: ExperimentShowcas
                         href={`https://github.com/analysta-ai/${experiment.githubRepo}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center text-sm text-primary-600 hover:text-primary-700 font-medium"
+                        className="inline-flex items-center px-3 py-1.5 text-sm text-primary-700 hover:text-primary-800 font-semibold bg-white/60 hover:bg-white/80 backdrop-blur-sm rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.9)] border border-white/60 transition-all duration-200"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                         </svg>
                         View Code

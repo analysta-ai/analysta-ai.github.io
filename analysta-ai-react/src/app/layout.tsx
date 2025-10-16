@@ -5,15 +5,15 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Analysta.AI - Where AI gets practical',
+  title: 'analysta.ai - Where AI gets practical',
   description: 'Applied AI Lab building practical solutions at the intersection of AI, Data, and Software Engineering. From QA automation to intelligent workflows.',
   keywords: 'AI, Machine Learning, Applied AI, Testing, QA Automation, Software Engineering',
-  authors: [{ name: 'Analysta AI Team' }],
+  authors: [{ name: 'analysta.ai Team' }],
   openGraph: {
-    title: 'Analysta.AI - Where AI gets practical',
+    title: 'analysta.ai - Where AI gets practical',
     description: 'Applied AI Lab building practical solutions at the intersection of AI, Data, and Software Engineering.',
     url: 'https://analysta.ai',
-    siteName: 'Analysta.AI',
+    siteName: 'analysta.ai',
     locale: 'en_US',
     type: 'website',
   },
