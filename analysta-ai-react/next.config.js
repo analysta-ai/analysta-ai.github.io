@@ -5,9 +5,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    appDir: true,
-  },
+  // For custom domain (analysta.ai), we don't need basePath
+  // All assets will be served from the root
 }
 
 module.exports = nextConfig
