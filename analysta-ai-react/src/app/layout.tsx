@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Analysta.AI - Where AI gets practical',
+    title: 'analysta.ai - Where AI gets practical',
     description: 'Applied AI Lab building practical solutions at the intersection of AI, Data, and Software Engineering.',
   },
   robots: {
@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>{children}</body>
     </html>
   )

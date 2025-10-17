@@ -72,9 +72,9 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="relative bg-gradient-to-br from-gray-50 via-white to-primary-50 border-t border-white/60 overflow-hidden">
+    <footer className="relative bg-gradient-to-br from-gray-50 via-white to-primary-50 dark:from-obsidian-50 dark:via-obsidian-100 dark:to-primary-800/20 border-t border-white/60 dark:border-obsidian-300/60 overflow-hidden transition-colors duration-500">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-5 dark:opacity-10">
         <div className="absolute inset-0" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232d5a87' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         }} />
@@ -91,20 +91,20 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center bg-white/60 backdrop-blur-xl px-4 py-2 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.08),inset_0_1px_2px_rgba(255,255,255,0.9)] border border-white/60 mb-4"
+              <div className="inline-flex items-center bg-white/60 dark:bg-obsidian-200/60 backdrop-blur-xl px-4 py-2 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.08),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_2px_rgba(255,255,255,0.1)] border border-white/60 dark:border-obsidian-300/60 mb-4"
                 style={{
                   backdropFilter: 'blur(20px) saturate(180%)',
                   WebkitBackdropFilter: 'blur(20px) saturate(180%)',
                 }}
               >
-                <span className="w-2 h-2 bg-primary-500 rounded-full mr-2 animate-pulse"></span>
-                <span className="text-sm font-bold text-gray-900">analysta.ai</span>
+                <span className="w-2 h-2 bg-primary-500 dark:bg-blue-400 rounded-full mr-2 animate-pulse"></span>
+                <span className="text-sm font-bold text-gray-900 dark:text-white">analysta.ai</span>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed mb-6 max-w-xs">
+              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-6 max-w-xs">
                 Building practical AI experiments at the intersection of{' '}
-                <strong className="text-primary-600">AI</strong>,{' '}
-                <strong className="text-secondary-600">Data</strong>, and{' '}
-                <strong className="text-accent-600">Engineering</strong>.
+                <strong className="text-primary-600 dark:text-primary-400">AI</strong>,{' '}
+                <strong className="text-secondary-600 dark:text-cyan-400">Data</strong>, and{' '}
+                <strong className="text-accent-600 dark:text-purple-400">Engineering</strong>.
               </p>
 
               {/* Social Links */}
@@ -117,7 +117,7 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-10 h-10 bg-white/60 backdrop-blur-xl rounded-full flex items-center justify-center text-gray-700 hover:text-primary-600 shadow-[0_4px_12px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.1),inset_0_1px_2px_rgba(255,255,255,0.9)] border border-white/60 transition-all duration-300"
+                    className="w-10 h-10 bg-white/60 dark:bg-obsidian-200/60 backdrop-blur-xl rounded-full flex items-center justify-center text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-blue-400 shadow-[0_4px_12px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.2),inset_0_1px_2px_rgba(255,255,255,0.1)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.1),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:hover:shadow-[0_6px_16px_rgba(0,0,0,0.3),inset_0_1px_2px_rgba(255,255,255,0.1)] border border-white/60 dark:border-obsidian-300/60 transition-all duration-300"
                     style={{
                       backdropFilter: 'blur(20px) saturate(180%)',
                       WebkitBackdropFilter: 'blur(20px) saturate(180%)',
@@ -141,7 +141,7 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="col-span-1"
             >
-              <h3 className="text-sm font-bold text-gray-900 mb-4 capitalize">
+              <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-4 capitalize">
                 {category}
               </h3>
               <ul className="space-y-3">
@@ -149,7 +149,7 @@ export default function Footer() {
                   <li key={link.name}>
                     <a
                       href={link.href}
-                      className="text-sm text-gray-600 hover:text-primary-600 transition-colors duration-200 inline-flex items-center group"
+                      className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-blue-400 transition-colors duration-200 inline-flex items-center group"
                     >
                       <span className="group-hover:translate-x-1 transition-transform duration-200">
                         {link.name}
@@ -170,7 +170,7 @@ export default function Footer() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mb-12"
         >
-          <div className="bg-white/60 backdrop-blur-xl rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] border border-white/60 p-6 lg:p-8"
+          <div className="bg-white/60 dark:bg-obsidian-200/60 backdrop-blur-xl rounded-[24px] shadow-[0_8px_32px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_2px_rgba(255,255,255,0.1)] border border-white/60 dark:border-obsidian-300/60 p-6 lg:p-8"
             style={{
               backdropFilter: 'blur(20px) saturate(180%)',
               WebkitBackdropFilter: 'blur(20px) saturate(180%)',
@@ -178,10 +178,10 @@ export default function Footer() {
           >
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                   Stay Updated
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Get the latest experiments, tutorials, and AI insights delivered to your inbox.
                 </p>
               </div>
@@ -190,7 +190,7 @@ export default function Footer() {
                   <input
                     type="email"
                     placeholder="Enter your email"
-                    className="flex-1 lg:w-64 px-4 py-3 bg-white/80 backdrop-blur-sm rounded-[16px] text-sm text-gray-900 placeholder-gray-500 shadow-[0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.9)] border border-white/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all duration-200"
+                    className="flex-1 lg:w-64 px-4 py-3 bg-white/80 dark:bg-obsidian-100/80 backdrop-blur-sm rounded-[16px] text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 shadow-[0_2px_8px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.9)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/60 dark:border-obsidian-300/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 dark:focus:ring-blue-500/50 transition-all duration-200"
                     style={{
                       backdropFilter: 'blur(10px)',
                       WebkitBackdropFilter: 'blur(10px)',
@@ -199,7 +199,7 @@ export default function Footer() {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="px-6 py-3 bg-primary-600/95 backdrop-blur-xl text-white rounded-[16px] text-sm font-semibold shadow-[0_4px_16px_rgba(37,99,235,0.25),inset_0_1px_1px_rgba(255,255,255,0.2)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35),inset_0_1px_1px_rgba(255,255,255,0.2)] border border-primary-500/20 transition-all duration-300"
+                    className="px-6 py-3 bg-primary-600/95 dark:bg-blue-500/95 backdrop-blur-xl text-white rounded-[16px] text-sm font-semibold shadow-[0_4px_16px_rgba(37,99,235,0.25),inset_0_1px_1px_rgba(255,255,255,0.2)] dark:shadow-[0_4px_16px_rgba(59,130,246,0.4),inset_0_1px_1px_rgba(255,255,255,0.2)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.35),inset_0_1px_1px_rgba(255,255,255,0.2)] dark:hover:shadow-[0_6px_20px_rgba(59,130,246,0.5),inset_0_1px_1px_rgba(255,255,255,0.2)] border border-primary-500/20 dark:border-blue-400/30 transition-all duration-300"
                     style={{
                       backdropFilter: 'blur(20px) saturate(180%)',
                       WebkitBackdropFilter: 'blur(20px) saturate(180%)',
@@ -219,9 +219,9 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="pt-8 border-t border-white/40"
+          className="pt-8 border-t border-white/40 dark:border-obsidian-300/40"
         >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm text-gray-600">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm text-gray-600 dark:text-gray-400">
             <p>
               © {currentYear} analysta.ai. All rights reserved.
             </p>

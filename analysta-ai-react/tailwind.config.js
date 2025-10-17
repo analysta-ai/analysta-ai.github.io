@@ -1,9 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/contexts/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -14,15 +16,30 @@ module.exports = {
           500: '#2d5a87',
           600: '#1a365d',
           700: '#0f2532',
+          800: '#0a1621',
         },
         secondary: {
           500: '#319795',
           600: '#2c7a7b',
+          700: '#234e52',
         },
         accent: {
           400: '#fbd38d',
           500: '#f6ad55',
           600: '#ed8936',
+          700: '#c05621',
+        },
+        obsidian: {
+          50: '#18181b',
+          100: '#27272a',
+          200: '#3f3f46',
+          300: '#52525b',
+          400: '#71717a',
+          500: '#a1a1aa',
+          600: '#d4d4d8',
+          700: '#e4e4e7',
+          800: '#f4f4f5',
+          900: '#fafafa',
         },
       },
       fontFamily: {
