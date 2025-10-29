@@ -1,13 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import HeroSection from '@/components/HeroSection'
-import RolesSection from '@/components/RolesSection'
-import ExperimentShowcase from '@/components/ExperimentShowcase'
-import Footer from '@/components/Footer'
+import BusinessAnalysisProcess from '@/components/BusinessAnalysisProcess'
 import ThemeToggle from '@/components/ThemeToggle'
 
-export default function Home() {
+export default function BusinessAnalysisPage() {
   const [theme, setTheme] = useState<'crystal' | 'obsidian'>('crystal')
   const [mounted, setMounted] = useState(false)
 
@@ -45,12 +42,8 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen">
-      <ThemeToggle theme={theme} onToggle={toggleTheme} />
-      <HeroSection theme={theme} />
-      <RolesSection />
-      <ExperimentShowcase />
-      <Footer />
-    </main>
+    <>
+      <BusinessAnalysisProcess theme={theme} onToggleTheme={toggleTheme} />
+    </>
   )
 }
