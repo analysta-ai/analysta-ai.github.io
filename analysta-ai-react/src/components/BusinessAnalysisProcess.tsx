@@ -245,13 +245,11 @@ export default function BusinessAnalysisProcess({ theme, onToggleTheme }: Busine
                 <span className="border rounded-full px-3 py-1 text-xs font-medium bg-green-100 dark:bg-green-600/30 text-green-700 dark:text-green-300 border-green-300 dark:border-green-500/40">
                   In Meeting
                 </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">Collaborative</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="border rounded-full px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-600/30 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-500/40">
                   Personal Work
                 </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">Individual</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="border rounded-full px-3 py-1 text-xs font-bold text-white bg-blue-500 border-white/20 shadow-sm">
