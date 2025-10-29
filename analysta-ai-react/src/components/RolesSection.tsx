@@ -56,44 +56,6 @@ export default function RolesSection() {
         'Bug report analysis'
       ]
     },
-    {
-      id: 'product-manager',
-      title: 'Product Manager',
-      description: 'Make data-driven decisions with AI insights on user feedback, market trends, and product roadmaps.',
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      ),
-      color: 'bg-purple-500',
-      gradient: 'from-purple-500 to-pink-500',
-      darkGradient: 'dark:from-purple-400 dark:to-pink-400',
-      capabilities: [
-        'Feature prioritization insights',
-        'User feedback analysis',
-        'Sprint planning optimization',
-        'Roadmap generation'
-      ]
-    },
-    {
-      id: 'developer',
-      title: 'Developer',
-      description: 'Accelerate development with AI-assisted code review, documentation generation, and technical solutions.',
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-        </svg>
-      ),
-      color: 'bg-orange-500',
-      gradient: 'from-orange-500 to-red-500',
-      darkGradient: 'dark:from-orange-400 dark:to-red-400',
-      capabilities: [
-        'Code review automation',
-        'Documentation generation',
-        'Bug pattern detection',
-        'API design assistance'
-      ]
-    },
   ]
 
   return (
@@ -126,8 +88,7 @@ export default function RolesSection() {
           </motion.div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 md:mb-6">
-            Built for
-            <br />
+            Built for&nbsp;
             <span className="bg-gradient-to-r from-primary-600 via-secondary-500 to-accent-500 dark:from-blue-400 dark:via-cyan-400 dark:to-purple-400 bg-clip-text text-transparent">
               Your Workflow
             </span>
