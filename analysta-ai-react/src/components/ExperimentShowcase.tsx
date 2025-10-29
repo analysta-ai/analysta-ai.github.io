@@ -15,9 +15,18 @@ interface ExperimentCard {
   stars?: string
   status: 'published' | 'coming-soon'
   thumbnail?: string
+  link?: string
 }
 
 const experiments: ExperimentCard[] = [
+  {
+    id: 'epic-to-test-suite',
+    title: 'Epic to Test Suite Generator',
+    description: 'Transform epics into comprehensive test cases with AI-powered analysis and coverage mapping',
+    phase: 'phase-1',
+    status: 'coming-soon',
+    link: '/experiments/epic-to-test-suite'
+  },
   {
     id: '1',
     title: 'AI Test Case Generator',
@@ -210,6 +219,7 @@ export default function ExperimentShowcase({ className = '' }: ExperimentShowcas
                 stars={experiment.stars}
                 status={experiment.status}
                 thumbnail={experiment.thumbnail}
+                link={experiment.link}
                 index={index}
               />
             ))}

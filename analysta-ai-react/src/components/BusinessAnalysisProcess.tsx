@@ -212,6 +212,7 @@ export default function BusinessAnalysisProcess({ theme, onToggleTheme }: Busine
                   description="Transform epics into comprehensive test cases with AI-powered analysis and coverage mapping"
                   status="coming-soon"
                   badge={{ label: "Coming Soon", color: "bg-blue-500" }}
+                  link="/experiments/epic-to-test-suite"
                   index={0}
                 />
                 

@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 
 interface ExperimentCardProps {
   title: string
@@ -16,6 +17,7 @@ interface ExperimentCardProps {
   status?: 'published' | 'coming-soon'
   thumbnail?: string
   index?: number
+  link?: string
   onClick?: () => void
 }
 
@@ -30,11 +32,16 @@ export default function ExperimentCard({
   status = 'coming-soon',
   thumbnail,
   index = 0,
+  link,
   onClick
 }: ExperimentCardProps) {
+  const router = useRouter()
+
   const handleVideoClick = () => {
     if (onClick) {
       onClick()
+    } else if (link) {
+      router.push(link)
     } else if (videoId) {
       // Create video modal
       const modal = document.createElement('div')
