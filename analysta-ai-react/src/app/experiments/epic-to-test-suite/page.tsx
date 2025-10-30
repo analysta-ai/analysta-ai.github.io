@@ -1,15 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, LayoutGroup } from 'framer-motion'
 import Link from 'next/link'
 import Footer from '@/components/Footer'
 import ThemeToggle from '@/components/ThemeToggle'
+import ReactFlow, { 
+  Background, 
+  Controls, 
+  Node, 
+  Edge,
+  Position
+} from 'reactflow'
+import 'reactflow/dist/style.css'
 
 export default function EpicToTestSuitePage() {
   const [theme, setTheme] = useState<'crystal' | 'obsidian'>('crystal')
   const [mounted, setMounted] = useState(false)
-  const [activeTab, setActiveTab] = useState<'overview' | 'workflow' | 'tools'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'workflow' | 'jira-flow' | 'tools'>('overview')
 
   useEffect(() => {
     setMounted(true)
@@ -45,6 +53,111 @@ export default function EpicToTestSuitePage() {
     "Ensures consistent Epic → Story → Test traceability",
     "Enables continuous AI-driven documentation and validation",
     "Integrates seamlessly with existing Agile/SAFe workflows"
+  ]
+
+  // React Flow nodes and edges for Jira workflow
+  const nodeStyles = {
+    base: {
+      borderRadius: '16px',
+      padding: '16px 20px',
+      fontWeight: '600',
+      fontSize: '13px',
+      border: '1px solid',
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
+      boxShadow: '0 4px 16px rgba(0,0,0,0.1), inset 0 1px 2px rgba(255,255,255,0.3)',
+      minWidth: '180px',
+    }
+  }
+
+  const getNodeStyle = (colorClass: string) => {
+    const isDark = theme === 'obsidian'
+    const colors: Record<string, any> = {
+      gray: { 
+        background: isDark ? 'rgba(75, 85, 99, 0.6)' : 'rgba(156, 163, 175, 0.7)',
+        borderColor: isDark ? 'rgba(156, 163, 175, 0.5)' : 'rgba(107, 114, 128, 0.6)',
+        color: 'white'
+      },
+      blue: {
+        background: isDark ? 'rgba(59, 130, 246, 0.6)' : 'rgba(59, 130, 246, 0.7)',
+        borderColor: isDark ? 'rgba(96, 165, 250, 0.6)' : 'rgba(37, 99, 235, 0.6)',
+        color: 'white'
+      },
+      purple: {
+        background: isDark ? 'rgba(139, 92, 246, 0.6)' : 'rgba(139, 92, 246, 0.7)',
+        borderColor: isDark ? 'rgba(167, 139, 250, 0.6)' : 'rgba(124, 58, 237, 0.6)',
+        color: 'white'
+      },
+      indigo: {
+        background: isDark ? 'rgba(99, 102, 241, 0.6)' : 'rgba(99, 102, 241, 0.7)',
+        borderColor: isDark ? 'rgba(129, 140, 248, 0.6)' : 'rgba(79, 70, 229, 0.6)',
+        color: 'white'
+      },
+      green: {
+        background: isDark ? 'rgba(16, 185, 129, 0.6)' : 'rgba(16, 185, 129, 0.7)',
+        borderColor: isDark ? 'rgba(52, 211, 153, 0.6)' : 'rgba(5, 150, 105, 0.6)',
+        color: 'white'
+      },
+      emerald: {
+        background: isDark ? 'rgba(5, 150, 105, 0.6)' : 'rgba(16, 185, 129, 0.8)',
+        borderColor: isDark ? 'rgba(16, 185, 129, 0.6)' : 'rgba(5, 150, 105, 0.6)',
+        color: 'white'
+      },
+      amber: {
+        background: isDark ? 'rgba(245, 158, 11, 0.6)' : 'rgba(245, 158, 11, 0.7)',
+        borderColor: isDark ? 'rgba(251, 191, 36, 0.6)' : 'rgba(217, 119, 6, 0.6)',
+        color: 'white'
+      }
+    }
+    return { ...nodeStyles.base, ...colors[colorClass] }
+  }
+
+  const initialNodes: Node[] = [
+    // Epic Flow
+    { id: 'epic-1', type: 'default', position: { x: 250, y: 0 }, data: { label: '📋 Epic: New' }, style: getNodeStyle('gray'), sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    { id: 'epic-2', type: 'default', position: { x: 250, y: 120 }, data: { label: '🔍 Epic: In Analysis\n(Epic Intake Agent)' }, style: { ...getNodeStyle('blue'), whiteSpace: 'pre-line' }, sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    { id: 'epic-3', type: 'default', position: { x: 250, y: 260 }, data: { label: '📝 Epic: Spec Ready\n(Requirements Spec Agent)' }, style: { ...getNodeStyle('purple'), whiteSpace: 'pre-line' }, sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    { id: 'human-1', type: 'default', position: { x: 20, y: 260 }, data: { label: '👤 PO/BA Review' }, style: { ...getNodeStyle('amber'), fontSize: '12px', padding: '12px 16px' }, targetPosition: Position.Top },
+    { id: 'epic-4', type: 'default', position: { x: 250, y: 400 }, data: { label: '✍️ Epic: Stories Draft\n(Story Decomposition Agent)' }, style: { ...getNodeStyle('indigo'), whiteSpace: 'pre-line' }, sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    
+    // Story creation point
+    { id: 'story-create', type: 'default', position: { x: 580, y: 400 }, data: { label: '➕ Stories Created' }, style: { ...getNodeStyle('green'), fontSize: '12px', padding: '12px 16px' }, sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    { id: 'story-1', type: 'default', position: { x: 580, y: 520 }, data: { label: '📄 Story: Draft' }, style: getNodeStyle('gray'), sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    { id: 'human-2', type: 'default', position: { x: 810, y: 520 }, data: { label: '👤 PO Accepts' }, style: { ...getNodeStyle('amber'), fontSize: '12px', padding: '12px 16px' }, targetPosition: Position.Top },
+    { id: 'story-2', type: 'default', position: { x: 580, y: 640 }, data: { label: '✅ Story: Ready' }, style: getNodeStyle('blue'), sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    { id: 'story-3', type: 'default', position: { x: 580, y: 760 }, data: { label: '📋 Story: Spec Complete\n(Story Writer Agent)' }, style: { ...getNodeStyle('purple'), whiteSpace: 'pre-line' }, sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    { id: 'story-4', type: 'default', position: { x: 580, y: 900 }, data: { label: '🧪 Story: Test Ready\n(Testcase Agent)' }, style: { ...getNodeStyle('green'), whiteSpace: 'pre-line' }, sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    { id: 'human-3', type: 'default', position: { x: 810, y: 900 }, data: { label: '👤 QA Review' }, style: { ...getNodeStyle('amber'), fontSize: '12px', padding: '12px 16px' }, targetPosition: Position.Top },
+    
+    // Epic completion
+    { id: 'epic-5', type: 'default', position: { x: 250, y: 540 }, data: { label: '🧪 Epic: Test Ready\n(E2E Suite Builder)' }, style: { ...getNodeStyle('green'), whiteSpace: 'pre-line' }, sourcePosition: Position.Bottom, targetPosition: Position.Top },
+    { id: 'human-4', type: 'default', position: { x: 20, y: 540 }, data: { label: '👤 QA Approves' }, style: { ...getNodeStyle('amber'), fontSize: '12px', padding: '12px 16px' }, targetPosition: Position.Top },
+    { id: 'epic-6', type: 'default', position: { x: 250, y: 680 }, data: { label: '✅ Epic: Ready for Dev' }, style: getNodeStyle('emerald'), targetPosition: Position.Top },
+  ]
+
+  const edgeStyles = {
+    animated: { stroke: theme === 'obsidian' ? '#60A5FA' : '#3B82F6', strokeWidth: 2.5 },
+    human: { stroke: theme === 'obsidian' ? '#FBBF24' : '#F59E0B', strokeWidth: 2, strokeDasharray: '8,4' }
+  }
+
+  const initialEdges: Edge[] = [
+    // Epic flow
+    { id: 'e1-2', source: 'epic-1', target: 'epic-2', animated: true, style: edgeStyles.animated },
+    { id: 'e2-3', source: 'epic-2', target: 'epic-3', animated: true, style: edgeStyles.animated },
+    { id: 'e3-h1', source: 'epic-3', target: 'human-1', style: edgeStyles.human },
+    { id: 'e3-4', source: 'epic-3', target: 'epic-4', animated: true, style: edgeStyles.animated },
+    { id: 'e4-5', source: 'epic-4', target: 'epic-5', animated: true, style: edgeStyles.animated },
+    { id: 'e5-h4', source: 'epic-5', target: 'human-4', style: edgeStyles.human },
+    { id: 'e5-6', source: 'epic-5', target: 'epic-6', animated: true, style: edgeStyles.animated },
+    
+    // Story creation branch
+    { id: 'e4-sc', source: 'epic-4', target: 'story-create', style: { ...edgeStyles.human, strokeDasharray: '8,4' }, label: 'creates', labelStyle: { fill: theme === 'obsidian' ? '#E5E7EB' : '#4B5563', fontWeight: 600 }, labelBgStyle: { fill: theme === 'obsidian' ? 'rgba(17, 24, 39, 0.8)' : 'rgba(255, 255, 255, 0.9)' } },
+    { id: 'esc-s1', source: 'story-create', target: 'story-1', animated: true, style: edgeStyles.animated },
+    { id: 's1-h2', source: 'story-1', target: 'human-2', style: edgeStyles.human },
+    { id: 's1-s2', source: 'story-1', target: 'story-2', animated: true, style: edgeStyles.animated },
+    { id: 's2-s3', source: 'story-2', target: 'story-3', animated: true, style: edgeStyles.animated },
+    { id: 's3-s4', source: 'story-3', target: 'story-4', animated: true, style: edgeStyles.animated },
+    { id: 's4-h3', source: 'story-4', target: 'human-3', style: edgeStyles.human },
   ]
 
   if (!mounted) {
@@ -168,6 +281,7 @@ export default function EpicToTestSuitePage() {
                   {[
                     { id: 'overview' as const, label: 'Overview' },
                     { id: 'workflow' as const, label: 'Workflow' },
+                    { id: 'jira-flow' as const, label: 'Jira Flow' },
                     { id: 'tools' as const, label: 'Tools' }
                   ].map((tab) => {
                     const isActive = activeTab === tab.id
@@ -215,142 +329,344 @@ export default function EpicToTestSuitePage() {
                     <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">Overview</h2>
                     <div className="prose prose-lg prose-gray dark:prose-invert max-w-none">
                       <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base md:text-lg">
-                        The <strong className="text-blue-600 dark:text-blue-400">Epic → Test Suite Generator</strong> automates the journey from <strong>Epic definition</strong> to a <strong>fully traceable test suite</strong> within your Agile delivery workflow.
+                        This system uses <strong className="text-blue-600 dark:text-blue-400">event-driven multi-agent orchestration</strong> to transform a Jira Epic into fully structured requirements and automated test coverage. Each agent acts like a specialist teammate — validating requirements, generating artifacts, and updating knowledge continuously as context evolves.
                       </p>
                       <p className="text-gray-700 dark:text-gray-300 leading-relaxed mt-4 text-base md:text-lg">
-                        Triggered directly from <a href="https://support.atlassian.com/cloud-automation/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">Jira Automation</a>, the system orchestrates a series of <strong>agentic AI processes</strong> that analyze, decompose, and document requirements across connected tools.
+                        This isn't a single AI script. It's a <strong className="text-blue-600 dark:text-blue-400">distributed intelligence model</strong> aligned to Agile & SAFe delivery flow.
                       </p>
-                      <p className="text-gray-700 dark:text-gray-300 leading-relaxed mt-4 text-base md:text-lg">
-                        Each Epic becomes the nucleus for a chain of automated knowledge transfer—from business specification to actionable QA validation—minimizing manual intervention while maintaining alignment with Agile / SAFe standards.
-                      </p>
+                      
+                      <div className="mt-8 p-6 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl border border-blue-200/50 dark:border-blue-700/50">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">What makes this special</h3>
+                        <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                          <li className="flex gap-2">
+                            <span className="text-blue-500 dark:text-blue-400 mt-1">•</span>
+                            <span>No static pipeline — <strong>event-driven intelligence</strong></span>
+                          </li>
+                          <li className="flex gap-2">
+                            <span className="text-blue-500 dark:text-blue-400 mt-1">•</span>
+                            <span>Modular agents instead of one monolith</span>
+                          </li>
+                          <li className="flex gap-2">
+                            <span className="text-blue-500 dark:text-blue-400 mt-1">•</span>
+                            <span>Human-in-the-loop control at key decision points</span>
+                          </li>
+                          <li className="flex gap-2">
+                            <span className="text-blue-500 dark:text-blue-400 mt-1">•</span>
+                            <span>Living documentation that updates itself</span>
+                          </li>
+                          <li className="flex gap-2">
+                            <span className="text-blue-500 dark:text-blue-400 mt-1">•</span>
+                            <span>Traceability from Epic → Stories → Tests → Updates</span>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 )}
 
                 {activeTab === 'workflow' && (
                   <div>
-                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">Workflow Summary</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">Workflow Stages & Agents</h2>
                     <div className="space-y-6">
                       {[
                         {
-                          title: "Trigger from Jira",
-                          scope: null,
-                          points: [
-                            "Epic is created or updated.",
-                            "A Jira Automation rule invokes the Epic → Test Suite Generator agent.",
-                            "Relevant context (Epic details, comments, linked stories) is passed to the AI orchestration layer."
-                          ]
+                          title: "Epic Submitted / Updated",
+                          agent: "Epic Intake Agent",
+                          trigger: "Jira Automation",
+                          purpose: "Detect new or updated Epics and kick off analysis",
+                          actions: [
+                            "Retrieve Epic details, comments, attachments, and linked issues",
+                            "Identify missing or unclear requirements",
+                            "Prompt stakeholders for clarification (via Jira comment if needed)",
+                            "Prepare working context for downstream agents"
+                          ],
+                          jiraStatus: "Epic: New → In Analysis"
                         },
                         {
-                          title: "Epic Requirements Analysis → Specification",
-                          scope: "in",
-                          points: [
-                            "AI reviews the Epic's requirements and generates a formal Epic Specification in Confluence.",
-                            "Specification includes business goals, scope, acceptance criteria, and dependencies."
-                          ]
+                          title: "Requirements Validation & Spec-Kit Creation",
+                          agent: "Requirements Spec Agent",
+                          trigger: "Intake agent confirms Epic readiness",
+                          purpose: "Build structured Epic specification and templates",
+                          actions: [
+                            "Build structured Epic specification in Confluence",
+                            "Create spec-kit templates for related User Stories",
+                            "Validate functional & non-functional requirements",
+                            "Tag open areas needing business input"
+                          ],
+                          jiraStatus: "Epic: In Analysis → Spec Ready",
+                          assignee: "Product Owner / BA",
+                          humanReview: "BA/Product Owner reviews Epic specification and approves for story breakdown"
                         },
                         {
-                          title: "Epic → User Story Breakdown",
-                          scope: "in",
-                          points: [
-                            "The agent decomposes the Epic into User Stories aligned with INVEST principles.",
-                            "Drafts are created in Jira for review by the Product Owner or BA."
-                          ]
+                          title: "Epic → User Story Decomposition",
+                          agent: "Story Decomposition Agent",
+                          trigger: "Epic spec confirmed complete",
+                          purpose: "Break Epic into INVEST-aligned User Stories",
+                          actions: [
+                            "Break Epic into INVEST-aligned User Stories",
+                            "Push draft stories into Jira",
+                            "Map dependencies and scope notes",
+                            "Populate initial acceptance criteria"
+                          ],
+                          jiraStatus: "Epic: Spec Ready → Stories Draft | Stories: Draft",
+                          assignee: "Product Owner",
+                          humanReview: "PO/BA verifies and accepts stories, moves them to Ready"
                         },
                         {
-                          title: "User Story Specification in Confluence",
-                          scope: "in",
-                          points: [
-                            "Each accepted story automatically syncs to a linked Confluence User Story Spec page.",
-                            "Non-functional and business acceptance criteria are appended for QA traceability."
-                          ]
+                          title: "User Story Specification",
+                          agent: "Confluence Story Writer Agent",
+                          trigger: "Story moved to 'Ready' / Accepted",
+                          purpose: "Create detailed story specifications with traceability",
+                          actions: [
+                            "Create or update User Story spec pages",
+                            "Sync acceptance criteria",
+                            "Add non-functional expectations",
+                            "Ensure traceability to Epic spec and design notes"
+                          ],
+                          jiraStatus: "Story: Ready → Spec Complete"
                         },
                         {
-                          title: "User Story → Technical Tasks Breakdown",
-                          scope: "out",
-                          points: [
-                            "Developer task creation and implementation remain manual or managed via standard Jira workflows."
-                          ]
+                          title: "Test Case Generation",
+                          agent: "Story Testcase Agent",
+                          trigger: "Story acceptance criteria finalised",
+                          purpose: "Translate acceptance criteria into executable tests",
+                          actions: [
+                            "Translate acceptance criteria into Zephyr test cases",
+                            "Group test steps logically and attach execution notes",
+                            "Link tests to Jira story for traceability"
+                          ],
+                          jiraStatus: "Story: Spec Complete → Test Ready",
+                          assignee: "QA Lead",
+                          humanReview: "QA Lead reviews and validates test case coverage"
                         },
                         {
-                          title: "User Story Level Test Cases in Zephyr",
-                          scope: "in",
-                          points: [
-                            "AI extracts acceptance criteria and generates test cases in Zephyr Scale, linking them back to Jira stories."
-                          ]
+                          title: "Epic-Level E2E Test Suite",
+                          agent: "E2E Suite Builder Agent",
+                          trigger: "All related stories reach 'Spec Complete'",
+                          purpose: "Build comprehensive end-to-end test scenarios",
+                          actions: [
+                            "Build end-to-end scenario tests",
+                            "Consolidate user flows across multiple stories",
+                            "Publish Epic-level Zephyr Test Suite"
+                          ],
+                          jiraStatus: "Epic: Stories Draft → Test Ready",
+                          assignee: "QA Lead",
+                          humanReview: "QA Lead approves E2E test suite and Epic moves to Ready for Development"
                         },
                         {
-                          title: "Epic-Level E2E Test Suites in Zephyr",
-                          scope: "in",
-                          points: [
-                            "Consolidates related stories into End-to-End Test Suites, maintaining Epic-to-test coverage."
-                          ]
-                        },
-                        {
-                          title: "Feedback and Re-analysis",
-                          scope: null,
-                          points: [
-                            "User comments or updates in Jira or Confluence trigger AI Assistants via Jira Automation or Confluence Automation, initiating contextual updates or re-generation of specifications and tests."
-                          ]
+                          title: "Continuous Feedback & Evolution",
+                          agent: "Maintenance & Sync Agent",
+                          trigger: "Jira comment / Confluence edit / New acceptance criteria / Story/Epic state change",
+                          purpose: "Maintain alignment as requirements evolve",
+                          actions: [
+                            "Detect changes & regenerate only affected docs/tests",
+                            "Notify stakeholders when updates applied",
+                            "Maintain Epic ↔ Story ↔ Test alignment"
+                          ],
+                          jiraStatus: "Status preserved, Comment added"
                         }
-                      ].map((step, index) => (
-                        <div key={index} className="border-l-4 border-blue-500 dark:border-blue-400 pl-4">
-                          <div className="flex items-start gap-3 mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex-1">
-                              {index + 1}. {step.title}
+                      ].map((stage, index) => (
+                        <div key={index} className="border-l-4 border-blue-500 dark:border-blue-400 pl-4 pb-4">
+                          <div className="mb-3">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                              {index + 1}. {stage.title}
                             </h3>
-                            {step.scope === "in" && (
-                              <span className="inline-flex items-center px-2.5 py-1 bg-blue-100 dark:bg-blue-600/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium border border-blue-300 dark:border-blue-500/40 whitespace-nowrap">
-                                In Scope
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              <span className="inline-flex items-center px-2.5 py-1 bg-purple-100 dark:bg-purple-600/30 text-purple-700 dark:text-purple-300 rounded-full text-xs font-medium border border-purple-300 dark:border-purple-500/40">
+                                Agent: {stage.agent}
                               </span>
-                            )}
-                            {step.scope === "out" && (
-                              <span className="inline-flex items-center px-2.5 py-1 bg-gray-100 dark:bg-gray-600/30 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-500/40 whitespace-nowrap">
-                                Out of Scope
+                              <span className="inline-flex items-center px-2.5 py-1 bg-gray-100 dark:bg-gray-600/30 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium border border-gray-300 dark:border-gray-500/40">
+                                Trigger: {stage.trigger}
                               </span>
+                              {stage.jiraStatus && (
+                                <span className="inline-flex items-center px-2.5 py-1 bg-blue-100 dark:bg-blue-600/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium border border-blue-300 dark:border-blue-500/40">
+                                  Jira: {stage.jiraStatus}
+                                </span>
+                              )}
+                              {stage.assignee && (
+                                <span className="inline-flex items-center px-2.5 py-1 bg-green-100 dark:bg-green-600/30 text-green-700 dark:text-green-300 rounded-full text-xs font-medium border border-green-300 dark:border-green-500/40">
+                                  Assignee: {stage.assignee}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-gray-600 dark:text-gray-400 italic mb-3">
+                            Purpose: {stage.purpose}
+                          </p>
+                          
+                          <div className="space-y-2">
+                            <p className="text-sm font-semibold text-gray-900 dark:text-white">Actions:</p>
+                            <ul className="space-y-2">
+                              {stage.actions.map((action, aIndex) => (
+                                <li key={aIndex} className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex gap-2">
+                                  <span className="text-blue-500 dark:text-blue-400 mt-1">•</span>
+                                  <span className="flex-1">{action}</span>
+                                </li>
+                              ))}
+                            </ul>
+                            {stage.humanReview && (
+                              <div className="mt-3 p-3 bg-amber-50/50 dark:bg-amber-900/20 rounded-lg border border-amber-200/50 dark:border-amber-700/50">
+                                <p className="text-sm text-amber-800 dark:text-amber-300">
+                                  <strong>Human Review Point:</strong> {stage.humanReview}
+                                </p>
+                              </div>
                             )}
                           </div>
-                          <ul className="space-y-2">
-                            {step.points.map((point, pIndex) => (
-                              <li key={pIndex} className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed flex gap-2">
-                                <span className="text-blue-500 dark:text-blue-400 mt-1">•</span>
-                                <span className="flex-1">{point}</span>
-                              </li>
-                            ))}
-                          </ul>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
+                {activeTab === 'jira-flow' && (
+                  <div className="space-y-6">
+                    <div>
+                      <p className="text-crystal-600 dark:text-crystal-100 leading-relaxed mb-4">
+                        Below is a visual representation of how Jira tickets flow through the system, from Epic creation to test-ready Stories. The diagram shows both automated agent transitions and human review checkpoints.
+                      </p>
+                    </div>
+
+                    <div className="h-[900px] bg-white/40 dark:bg-obsidian-200/40 backdrop-blur-xl rounded-[24px] border border-crystal-200/30 dark:border-obsidian-100/30 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_2px_rgba(255,255,255,0.2)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3),0_2px_8px_rgba(0,0,0,0.2),inset_0_1px_2px_rgba(255,255,255,0.05)]">
+                      <ReactFlow
+                        nodes={initialNodes}
+                        edges={initialEdges}
+                        fitView
+                        style={{ 
+                          background: theme === 'obsidian' 
+                            ? 'rgba(17, 24, 39, 0.8)' 
+                            : 'rgba(249, 250, 251, 0.8)' 
+                        }}
+                      >
+                        <Background 
+                          color={theme === 'obsidian' ? 'rgba(148, 163, 184, 0.2)' : 'rgba(148, 163, 184, 0.3)'} 
+                          gap={20} 
+                          size={1.5}
+                        />
+                        <Controls 
+                          className="!bg-white/60 dark:!bg-obsidian-300/60 !backdrop-blur-xl !border !border-crystal-200/30 dark:!border-obsidian-100/30 !rounded-xl !shadow-[0_4px_16px_rgba(0,0,0,0.1)] [&_button]:!rounded-lg [&_button]:!border-0 [&_button]:!backdrop-blur-sm [&_button:hover]:!bg-crystal-100/50 dark:[&_button:hover]:!bg-obsidian-200/50" 
+                        />
+                      </ReactFlow>
+                    </div>
+
+                    {/* Legend */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                      <div>
+                        <h4 className="font-bold text-crystal-900 dark:text-crystal-50 mb-4">Flow Types</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-16 h-1 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full shadow-sm"></div>
+                            <span className="text-sm text-crystal-600 dark:text-crystal-200">Automated transition</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="w-16 h-1 bg-gradient-to-r from-amber-400 to-amber-600 rounded-full shadow-sm" style={{ backgroundImage: 'repeating-linear-gradient(90deg, #FBBF24, #FBBF24 8px, transparent 8px, transparent 12px)' }}></div>
+                            <span className="text-sm text-crystal-600 dark:text-crystal-200">Human review required</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <h4 className="font-bold text-crystal-900 dark:text-crystal-50 mb-4">Status Colors</h4>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-gray-400 to-gray-600 shadow-sm"></div>
+                            <span className="text-xs text-crystal-600 dark:text-crystal-200">New/Draft</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 shadow-sm"></div>
+                            <span className="text-xs text-crystal-600 dark:text-crystal-200">In Progress</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-purple-400 to-purple-600 shadow-sm"></div>
+                            <span className="text-xs text-crystal-600 dark:text-crystal-200">Spec Ready</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-indigo-400 to-indigo-600 shadow-sm"></div>
+                            <span className="text-xs text-crystal-600 dark:text-crystal-200">Stories Draft</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-green-400 to-green-600 shadow-sm"></div>
+                            <span className="text-xs text-crystal-600 dark:text-crystal-200">Test Ready</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-sm"></div>
+                            <span className="text-xs text-crystal-600 dark:text-crystal-200">Ready for Dev</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {activeTab === 'tools' && (
                   <div>
-                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">Tools and Integrations</h2>
-                    <div className="grid grid-cols-1 gap-3">
+                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">Tools & Automations</h2>
+                    
+                    <div className="grid grid-cols-1 gap-3 mb-8">
                       {[
-                        { name: "Jira Automation", description: "Triggers and workflow orchestration", url: "https://support.atlassian.com/cloud-automation/" },
-                        { name: "Confluence Automation", description: "Spec creation and update triggers", url: "https://support.atlassian.com/confluence-cloud/docs/what-are-automation-rules/" },
-                        { name: "Zephyr Scale", description: "Automated test suite generation and traceability", url: "https://marketplace.atlassian.com/apps/1213259/zephyr-scale-test-management-for-jira" },
-                        { name: "OpenAI Agentic System", description: "Handles document generation, semantic linking, and cross-tool orchestration", url: null },
-                        { name: "Jira REST API / Webhooks", description: "Data exchange and synchronization", url: null }
+                        { name: "Jira Automation", description: "Primary trigger engine for event-driven orchestration", url: "https://support.atlassian.com/cloud-automation/", role: "Triggers" },
+                        { name: "Confluence Automation", description: "Doc sync triggers and specification management", url: "https://support.atlassian.com/confluence-cloud/docs/what-are-automation-rules/", role: "Documentation" },
+                        { name: "Zephyr Scale", description: "Test management and traceability platform", url: "https://marketplace.atlassian.com/apps/1213259/zephyr-scale-test-management-for-jira", role: "Testing" },
+                        { name: "Elitea.ai", description: "Workflow orchestration platform for distributed intelligence", url: "https://elitea.ai", role: "AI Orchestration" }
                       ].map((tool, index) => (
                         <div key={index} className="bg-white/40 dark:bg-obsidian-100/40 rounded-xl p-4 border border-white/40 dark:border-obsidian-300/40 hover:bg-white/60 dark:hover:bg-obsidian-100/60 transition-all duration-200">
                           <div className="flex items-start gap-3">
                             <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
                             <div className="flex-1">
-                              {tool.url ? (
-                                <a href={tool.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                                  {tool.name} ↗
-                                </a>
-                              ) : (
-                                <span className="font-semibold text-gray-900 dark:text-white">{tool.name}</span>
-                              )}
+                              <div className="flex items-center gap-2 flex-wrap">
+                                {tool.url ? (
+                                  <a href={tool.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                    {tool.name} ↗
+                                  </a>
+                                ) : (
+                                  <span className="font-semibold text-gray-900 dark:text-white">{tool.name}</span>
+                                )}
+                                <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-600/30 text-blue-700 dark:text-blue-300 rounded text-xs font-medium">
+                                  {tool.role}
+                                </span>
+                              </div>
                               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{tool.description}</p>
                             </div>
                           </div>
                         </div>
                       ))}
+                    </div>
+
+                    <div className="mt-8">
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">System Summary</h3>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b-2 border-gray-300 dark:border-gray-600">
+                              <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">Flow Event</th>
+                              <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">Agent</th>
+                              <th className="text-left py-3 px-4 font-semibold text-gray-900 dark:text-white">Key Output</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                            {[
+                              { event: "Epic created/updated", agent: "Intake Agent", output: "Parsed context & gap check" },
+                              { event: "Clarifications needed", agent: "Clarifier Agent", output: "Jira request + update" },
+                              { event: "Epic ready", agent: "Requirements Agent", output: "Confluence Epic Spec + spec-kits" },
+                              { event: "Stories drafted", agent: "Decomposition Agent", output: "Jira stories w/ criteria" },
+                              { event: "Story accepted", agent: "Story Spec Agent", output: "Confluence story spec" },
+                              { event: "Criteria ready", agent: "Testcase Agent", output: "Zephyr test cases" },
+                              { event: "Epic ready", agent: "E2E Agent", output: "Epic-level test suite" },
+                              { event: "Any change", agent: "Maintenance Agent", output: "Real-time updates" }
+                            ].map((row, index) => (
+                              <tr key={index} className="hover:bg-gray-50 dark:hover:bg-obsidian-100/40 transition-colors">
+                                <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{row.event}</td>
+                                <td className="py-3 px-4">
+                                  <span className="inline-flex items-center px-2 py-1 bg-purple-100 dark:bg-purple-600/30 text-purple-700 dark:text-purple-300 rounded text-xs font-medium">
+                                    {row.agent}
+                                  </span>
+                                </td>
+                                <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{row.output}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 )}
